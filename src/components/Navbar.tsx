@@ -25,22 +25,17 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="sticky top-0 z-50 bg-card/80 backdrop-blur-lg border-b border-border">
-      <div className="container mx-auto px-4">
+    <nav className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
+      <div className="container mx-auto px-6">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/daily" className="flex items-center gap-3">
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              className="flex items-center gap-2"
-            >
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-accent to-streak-lightning flex items-center justify-center">
-                <BookOpen className="w-5 h-5 text-accent-foreground" />
-              </div>
-              <span className="font-serif font-bold text-xl hidden sm:block">
-                SystemDesign<span className="text-accent">.io</span>
-              </span>
-            </motion.div>
+          <Link to="/daily" className="flex items-center gap-3 group">
+            <div className="w-9 h-9 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center transition-colors group-hover:bg-primary/20">
+              <BookOpen className="w-4 h-4 text-primary" />
+            </div>
+            <span className="font-serif text-lg font-semibold tracking-tight hidden sm:block">
+              SystemDesign
+            </span>
           </Link>
 
           {/* Nav Links */}
@@ -52,11 +47,8 @@ const Navbar = () => {
               return (
                 <Link key={item.path} to={item.path}>
                   <motion.div
-                    whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
-                    className={`nav-link flex items-center gap-2 rounded-lg ${
-                      isActive ? 'active bg-secondary' : 'hover:bg-secondary/50'
-                    }`}
+                    className={`nav-link flex items-center gap-2 ${isActive ? 'active text-foreground bg-muted' : ''}`}
                   >
                     <Icon className="w-4 h-4" />
                     <span className="hidden md:inline">{item.label}</span>
@@ -67,26 +59,20 @@ const Navbar = () => {
           </div>
 
           {/* Streaks & User */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
             {user && (
               <>
                 {/* Daily Streak */}
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-accent/10"
-                >
-                  <Flame className="w-4 h-4 text-accent streak-fire" />
-                  <span className="font-semibold text-accent">{user.dailyStreak}</span>
-                </motion.div>
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-streak/10 border border-streak/20">
+                  <Flame className="w-4 h-4 text-streak streak-fire" />
+                  <span className="text-sm font-medium text-streak/90">{user.dailyStreak}</span>
+                </div>
 
                 {/* Practice Streak */}
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-streak-lightning/10"
-                >
-                  <Zap className="w-4 h-4 text-streak-lightning streak-lightning" />
-                  <span className="font-semibold text-streak-lightning">{user.practiceStreak}</span>
-                </motion.div>
+                <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-practice/10 border border-practice/20">
+                  <Zap className="w-4 h-4 text-practice" />
+                  <span className="text-sm font-medium text-practice/90">{user.practiceStreak}</span>
+                </div>
               </>
             )}
 
@@ -98,7 +84,6 @@ const Navbar = () => {
               className="text-muted-foreground hover:text-foreground"
             >
               <LogOut className="w-4 h-4" />
-              <span className="hidden md:inline ml-2">Logout</span>
             </Button>
           </div>
         </div>

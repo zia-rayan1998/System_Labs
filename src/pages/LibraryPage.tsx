@@ -6,13 +6,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { 
-  MapPin, 
-  Lock, 
   CheckCircle2, 
   Clock, 
-  BookOpen,
-  Zap,
-  Star
+  ArrowRight,
+  Sparkles
 } from "lucide-react";
 
 const LibraryPage = () => {
@@ -27,257 +24,182 @@ const LibraryPage = () => {
     return "available";
   };
 
-  const getDifficultyColor = (difficulty: string) => {
-    switch (difficulty) {
-      case "beginner": return "text-green-400 bg-green-400/10 border-green-400/30";
-      case "intermediate": return "text-yellow-400 bg-yellow-400/10 border-yellow-400/30";
-      case "advanced": return "text-red-400 bg-red-400/10 border-red-400/30";
-      default: return "text-muted-foreground bg-muted/10 border-border";
-    }
-  };
-
-  // Calculate positions for a winding path layout
-  const getNodePosition = (index: number) => {
-    const row = Math.floor(index / 3);
-    const col = index % 3;
-    const isEvenRow = row % 2 === 0;
-    
-    // Zigzag pattern
-    const x = isEvenRow ? col : 2 - col;
-    const baseX = 15 + x * 35;
-    const baseY = 12 + row * 24;
-    
-    // Add some organic variation
-    const offsetX = (index * 7) % 5 - 2.5;
-    const offsetY = (index * 3) % 4 - 2;
-    
-    return { x: baseX + offsetX, y: baseY + offsetY };
-  };
-
   const handleTopicClick = (topicId: string) => {
     navigate(`/topic/${topicId}`);
   };
 
-  const completedCount = user ? mockTopics.filter(t => mockTopicService.hasCompletedTopic(user.id, t.id)).length : 0;
+  const completedCount = user 
+    ? mockTopics.filter(t => mockTopicService.hasCompletedTopic(user.id, t.id)).length 
+    : 0;
+
+  // Position nodes in a flowing path pattern
+  const getNodeStyle = (index: number) => {
+    const totalTopics = mockTopics.length;
+    const isEven = index % 2 === 0;
+    
+    return {
+      marginLeft: isEven ? '0%' : '40%',
+      marginRight: isEven ? '40%' : '0%',
+    };
+  };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-background grain">
       <Navbar />
       
       {/* Header */}
-      <div className="border-b border-border bg-card/50 backdrop-blur-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <header className="border-b border-border/50 bg-card/30">
+        <div className="container mx-auto px-6 py-12">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h1 className="text-4xl font-serif font-bold text-foreground mb-2">
-              Learning <span className="text-gradient">Journey</span>
+            <div className="flex items-center gap-2 text-primary mb-3">
+              <Sparkles className="w-4 h-4" />
+              <span className="text-sm font-medium">Learning Path</span>
+            </div>
+            <h1 className="font-serif text-4xl md:text-5xl font-semibold text-foreground mb-3 tracking-tight">
+              Your Journey
             </h1>
-            <p className="text-muted-foreground text-lg">
-              Navigate through system design concepts. Each location unlocks new knowledge.
+            <p className="text-muted-foreground text-lg max-w-xl">
+              Navigate through {mockTopics.length} carefully crafted topics. 
+              Each one builds on the last.
             </p>
           </motion.div>
 
-          {/* Stats Bar */}
+          {/* Progress */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.1 }}
-            className="flex items-center gap-6 mt-6"
+            className="mt-8 max-w-md"
           >
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <BookOpen className="w-5 h-5 text-primary" />
-              <span>{mockTopics.length} Topics</span>
+            <div className="flex items-center justify-between text-sm mb-2">
+              <span className="text-muted-foreground">Progress</span>
+              <span className="text-foreground font-medium">{completedCount} of {mockTopics.length}</span>
             </div>
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <CheckCircle2 className="w-5 h-5 text-success" />
-              <span>{completedCount} Completed</span>
-            </div>
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <Zap className="w-5 h-5 text-practice" />
-              <span>Practice Mode</span>
+            <div className="progress-track">
+              <motion.div 
+                className="progress-fill"
+                initial={{ width: 0 }}
+                animate={{ width: `${(completedCount / mockTopics.length) * 100}%` }}
+                transition={{ duration: 0.8, delay: 0.3 }}
+              />
             </div>
           </motion.div>
         </div>
-      </div>
+      </header>
 
-      {/* Map Container */}
-      <div className="flex-1 map-container grid-pattern relative overflow-hidden">
-        {/* SVG Path Lines */}
-        <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ minHeight: '800px' }}>
-          <defs>
-            <linearGradient id="pathGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="hsl(262, 83%, 58%)" stopOpacity="0.6" />
-              <stop offset="100%" stopColor="hsl(217, 91%, 60%)" stopOpacity="0.6" />
-            </linearGradient>
-          </defs>
-          
-          {mockTopics.slice(0, -1).map((_, index) => {
-            const start = getNodePosition(index);
-            const end = getNodePosition(index + 1);
-            
-            return (
-              <motion.path
-                key={index}
-                d={`M ${start.x}% ${start.y}% Q ${(start.x + end.x) / 2}% ${start.y + 5}% ${end.x}% ${end.y}%`}
-                fill="none"
-                stroke="url(#pathGradient)"
-                strokeWidth="2"
-                className="map-path"
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={{ pathLength: 1, opacity: 1 }}
-                transition={{ duration: 1, delay: index * 0.1 }}
-              />
-            );
-          })}
-        </svg>
+      {/* Journey Map */}
+      <main className="flex-1 py-16">
+        <div className="container mx-auto px-6 max-w-3xl">
+          {/* Path visualization */}
+          <div className="relative">
+            {/* Connecting line */}
+            <div className="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-border via-border to-transparent -translate-x-1/2 hidden md:block" />
 
-        {/* Topic Nodes */}
-        <div className="relative w-full min-h-[800px] max-w-7xl mx-auto px-4">
-          {mockTopics.map((topic, index) => {
-            const position = getNodePosition(index);
-            const status = getTopicStatus(topic);
-            
-            return (
-              <motion.div
-                key={topic.id}
-                className="absolute cursor-pointer"
-                style={{ 
-                  left: `${position.x}%`, 
-                  top: `${position.y}%`,
-                  transform: 'translate(-50%, -50%)'
-                }}
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ 
-                  duration: 0.5, 
-                  delay: index * 0.08,
-                  type: "spring",
-                  stiffness: 200
-                }}
-                onMouseEnter={() => setHoveredTopic(topic.id)}
-                onMouseLeave={() => setHoveredTopic(null)}
-                onClick={() => handleTopicClick(topic.id)}
-                whileHover={{ scale: 1.05, y: -5 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                {/* Pulse Ring for Available */}
-                {status === "available" && (
+            {/* Topic Nodes */}
+            <div className="space-y-6">
+              {mockTopics.map((topic, index) => {
+                const status = getTopicStatus(topic);
+                const isHovered = hoveredTopic === topic.id;
+                const nodeStyle = getNodeStyle(index);
+                
+                return (
                   <motion.div
-                    className="absolute inset-0 rounded-2xl bg-primary/30"
-                    animate={{ 
-                      scale: [1, 1.3, 1],
-                      opacity: [0.5, 0, 0.5]
-                    }}
+                    key={topic.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
                     transition={{ 
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut"
+                      duration: 0.4, 
+                      delay: index * 0.06,
+                      ease: [0.25, 0.46, 0.45, 0.94]
                     }}
-                  />
-                )}
-
-                {/* Node Card */}
-                <div
-                  className={`
-                    relative w-48 p-4 rounded-2xl border backdrop-blur-sm transition-all duration-300
-                    ${status === "completed" 
-                      ? "bg-success/10 border-success/30" 
-                      : status === "locked"
-                      ? "bg-muted/20 border-border opacity-60"
-                      : "bg-card/80 border-primary/30 hover:border-primary"
-                    }
-                  `}
-                >
-                  {/* Status Icon */}
-                  <div className={`
-                    absolute -top-3 -right-3 w-8 h-8 rounded-full flex items-center justify-center
-                    ${status === "completed" 
-                      ? "bg-success text-success-foreground" 
-                      : status === "locked"
-                      ? "bg-muted text-muted-foreground"
-                      : "bg-primary text-primary-foreground"
-                    }
-                  `}>
-                    {status === "completed" ? (
-                      <CheckCircle2 className="w-4 h-4" />
-                    ) : status === "locked" ? (
-                      <Lock className="w-4 h-4" />
-                    ) : (
-                      <MapPin className="w-4 h-4" />
-                    )}
-                  </div>
-
-                  {/* Topic Number */}
-                  <div className="text-xs text-muted-foreground mb-2">
-                    Location {String(index + 1).padStart(2, '0')}
-                  </div>
-
-                  {/* Topic Title */}
-                  <h3 className="font-semibold text-foreground text-sm mb-2 line-clamp-2">
-                    {topic.title}
-                  </h3>
-
-                  {/* Meta Info */}
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className={`text-xs px-2 py-0.5 rounded-full border ${getDifficultyColor(topic.difficulty)}`}>
-                      {topic.difficulty}
-                    </span>
-                    <span className="text-xs text-muted-foreground flex items-center gap-1">
-                      <Clock className="w-3 h-3" />
-                      {topic.estimatedTime}
-                    </span>
-                  </div>
-
-                  {/* Expanded Info on Hover */}
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ 
-                      opacity: hoveredTopic === topic.id ? 1 : 0,
-                      height: hoveredTopic === topic.id ? "auto" : 0
-                    }}
-                    className="overflow-hidden"
+                    style={nodeStyle}
+                    className="relative"
                   >
-                    <p className="text-xs text-muted-foreground mt-3 line-clamp-2">
-                      {topic.description}
-                    </p>
-                    <div className="flex items-center gap-1 mt-2 text-primary text-xs font-medium">
-                      <Star className="w-3 h-3" />
-                      <span>{topic.questions.length} Questions</span>
+                    {/* Node connector dot */}
+                    <div className="absolute left-1/2 -translate-x-1/2 top-8 w-3 h-3 rounded-full bg-border hidden md:block" style={{ left: index % 2 === 0 ? 'calc(100% + 24px)' : '-24px' }}>
+                      {status === 'completed' && (
+                        <div className="w-3 h-3 rounded-full bg-practice" />
+                      )}
                     </div>
-                  </motion.div>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
 
-        {/* Legend */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
-          className="absolute bottom-8 right-8 bg-card/90 backdrop-blur-sm border border-border rounded-xl p-4"
-        >
-          <h4 className="text-sm font-semibold text-foreground mb-3">Map Legend</h4>
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 text-xs">
-              <div className="w-4 h-4 rounded-full bg-primary" />
-              <span className="text-muted-foreground">Available</span>
-            </div>
-            <div className="flex items-center gap-2 text-xs">
-              <div className="w-4 h-4 rounded-full bg-success" />
-              <span className="text-muted-foreground">Completed</span>
-            </div>
-            <div className="flex items-center gap-2 text-xs">
-              <div className="w-4 h-4 rounded-full bg-muted" />
-              <span className="text-muted-foreground">Locked</span>
+                    <motion.div
+                      className={`map-node cursor-pointer ${status === 'completed' ? 'map-node-completed' : ''} ${status === 'locked' ? 'map-node-locked' : ''}`}
+                      onMouseEnter={() => setHoveredTopic(topic.id)}
+                      onMouseLeave={() => setHoveredTopic(null)}
+                      onClick={() => handleTopicClick(topic.id)}
+                      whileTap={{ scale: 0.99 }}
+                    >
+                      <div className="map-node-inner">
+                        {/* Header */}
+                        <div className="flex items-start justify-between gap-4 mb-3">
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="text-xs text-muted-foreground font-medium">
+                                {String(index + 1).padStart(2, '0')}
+                              </span>
+                              <span className={`text-xs px-2 py-0.5 rounded-full ${
+                                topic.difficulty === 'Beginner' 
+                                  ? 'bg-practice/10 text-practice' 
+                                  : topic.difficulty === 'Intermediate'
+                                  ? 'bg-primary/10 text-primary'
+                                  : 'bg-destructive/10 text-destructive'
+                              }`}>
+                                {topic.difficulty}
+                              </span>
+                            </div>
+                            <h3 className="font-serif text-lg font-semibold text-foreground leading-tight">
+                              {topic.title}
+                            </h3>
+                          </div>
+
+                          {/* Status indicator */}
+                          {status === 'completed' && (
+                            <div className="w-6 h-6 rounded-full bg-practice/20 flex items-center justify-center flex-shrink-0">
+                              <CheckCircle2 className="w-4 h-4 text-practice" />
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Description */}
+                        <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                          {topic.description}
+                        </p>
+
+                        {/* Footer */}
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                            <span className="flex items-center gap-1">
+                              <Clock className="w-3.5 h-3.5" />
+                              {topic.estimatedTime} min
+                            </span>
+                            <span>{topic.questions.length} questions</span>
+                          </div>
+
+                          {/* Hover indicator */}
+                          <motion.div
+                            initial={{ opacity: 0, x: -4 }}
+                            animate={{ 
+                              opacity: isHovered ? 1 : 0, 
+                              x: isHovered ? 0 : -4 
+                            }}
+                            className="flex items-center gap-1 text-primary text-sm font-medium"
+                          >
+                            Start <ArrowRight className="w-3.5 h-3.5" />
+                          </motion.div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
-        </motion.div>
-      </div>
+        </div>
+      </main>
 
       <Footer />
     </div>
