@@ -12,7 +12,7 @@ const Footer = () => {
               <div className="w-8 h-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
                 <BookOpen className="w-4 h-4 text-primary" />
               </div>
-              <span className="font-serif text-lg font-semibold">SystemDesign</span>
+              <span className="font-serif text-lg font-semibold">System-Mentor</span>
             </div>
             <p className="text-sm text-muted-foreground max-w-sm leading-relaxed">
               Build lasting system design knowledge through daily practice. 

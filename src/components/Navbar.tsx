@@ -34,7 +34,7 @@ const Navbar = () => {
               <BookOpen className="w-4 h-4 text-primary" />
             </div>
             <span className="font-serif text-lg font-semibold tracking-tight hidden sm:block">
-              SystemDesign
+              System-Mentor
             </span>
           </Link>
 
