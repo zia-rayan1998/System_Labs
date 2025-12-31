@@ -253,12 +253,6 @@ The application is fully responsive and works on:
 
 - *Mohammed ZIa uddin*
 
-## 🙏 Acknowledgments
-
-- shadcn/ui for the excellent component library
-- Flask team for the amazing framework
-- React team for the powerful UI library
-
 ---
 
 **Happy Learning! Thank u** 🔥
