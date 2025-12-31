@@ -47,6 +47,9 @@ python backend/seed_data.py
 # Navigate to project root first
 cd C:\FinalProject\system-spark
 
+#if wnated to run the full backend as a pack the command is
+cd c:/FinalProject\system-spark/python -m backend.app
+
 # Then run the app
 python backend/app.py
 
