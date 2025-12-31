@@ -76,7 +76,7 @@ const AuthPage = () => {
             <div className="w-9 h-9 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
               <BookOpen className="w-4 h-4 text-primary" />
             </div>
-            <span className="font-serif text-lg font-semibold">SystemDesign</span>
+            <span className="font-serif text-lg font-semibold">System-Mentor</span>
           </div>
 
           <motion.div

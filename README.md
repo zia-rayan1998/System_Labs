@@ -1,4 +1,4 @@
-# SystemDesign Learning Platform
+# System-Mentor  SystemDesign Learning Platform
 
 A full-stack web application for learning system design concepts through daily topics, interactive quizzes, and streak tracking.The platform encourages consistency by offering one daily topic and quiz per day while also allowing users to practice topics freely from a library. Built with React (TypeScript) frontend and Flask (Python) backend.
 
