@@ -1,8 +1,22 @@
 # SystemDesign Learning Platform
 
-A full-stack web application for learning system design concepts through daily topics, interactive quizzes, and streak tracking. Built with React (TypeScript) frontend and Flask (Python) backend.
+A full-stack web application for learning system design concepts through daily topics, interactive quizzes, and streak tracking.The platform encourages consistency by offering one daily topic and quiz per day while also allowing users to practice topics freely from a library. Built with React (TypeScript) frontend and Flask (Python) backend.
 
-![SystemDesign Platform](https://img.shields.io/badge/React-18.3-blue) ![Flask](https://img.shields.io/badge/Flask-2.3-green) ![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue) ![License](https://img.shields.io/badge/license-MIT-green)
+# project motivation
+
+-**System Design is often difficult for beginners because**:
+Resources are scattered
+Learning lacks structure
+There is no daily accountability
+
+- **This project solves that by**:
+Providing one focused topic per day which create user interest in system design 
+Reinforcing learning through short quizzes, which helps user tests their knowledge
+Tracking progress with daily streaks like we do on leetcode and geekforgeeks
+Offering a topic library for revision which can help them understand other topics in details
+
+
+![SystemDesign Platform](https://img.shields.io/badge/React-18.3-blue) ![Flask](https://img.shields.io/badge/Flask-2.3-green) ![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue) 
 
 ## 🚀 Features
 
@@ -13,18 +27,6 @@ A full-stack web application for learning system design concepts through daily t
 - **Modern UI**: Beautiful light theme with navy blue and green color scheme
 - **JWT Authentication**: Secure user authentication and session management
 - **RESTful API**: Clean, well-structured backend API
-
-## 📋 Table of Contents
-
-- [Tech Stack](#tech-stack)
-- [Architecture](#architecture)
-- [Frontend-Backend Integration](#frontend-backend-integration)
-- [Getting Started](#getting-started)
-- [Project Structure](#project-structure)
-- [API Documentation](#api-documentation)
-- [Environment Variables](#environment-variables)
-- [Development](#development)
-- [Deployment](#deployment)
 
 ## 🛠 Tech Stack
 
@@ -129,62 +131,10 @@ This allows the frontend to make requests to `/api/*` which are automatically fo
 - **Python** 3.8+
 - **pip** (Python package manager)
 
-### Installation
-
-#### 1. Clone the repository
-
-```bash
-git clone <repository-url>
-cd system-spark
-```
-
-#### 2. Backend Setup
-
-```bash
-# Navigate to backend directory
-cd backend
-
-# Create virtual environment (recommended)
-python -m venv venv
-
-# Activate virtual environment
-# On Windows:
-venv\Scripts\activate
-# On macOS/Linux:
-source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Initialize database (creates system_spark.db)
-python app.py
-```
-
+The frontend will start on `http://localhost:8080`
 The backend will start on `http://localhost:5000`
 
-#### 3. Frontend Setup
 
-```bash
-# Navigate to root directory
-cd ..
-
-# Install dependencies
-npm install
-
-# Start development server
-npm run dev
-```
-
-The frontend will start on `http://localhost:8080`
-
-### Seed Data (Optional)
-
-To populate the database with sample topics and questions:
-
-```bash
-cd backend
-python seed_data.py
-```
 
 ## 📁 Project Structure
 
@@ -234,54 +184,9 @@ system-spark/
 
 ## 📚 API Documentation
 
-### Authentication Endpoints
 
-#### POST `/api/auth/signup`
-Create a new user account.
 
-**Request Body:**
-```json
-{
-  "email": "user@example.com",
-  "password": "password123",
-  "username": "Username"
-}
-```
-
-**Response:**
-```json
-{
-  "user": { ... },
-  "token": "jwt_token_here"
-}
-```
-
-#### POST `/api/auth/login`
-Login with email and password.
-
-**Request Body:**
-```json
-{
-  "email": "user@example.com",
-  "password": "password123"
-}
-```
-
-**Response:**
-```json
-{
-  "user": { ... },
-  "token": "jwt_token_here"
-}
-```
-
-#### GET `/api/auth/me`
-Get current user information (requires JWT token).
-
-**Headers:**
-```
-Authorization: Bearer <jwt_token>
-```
+  
 
 ### Topics Endpoints
 
@@ -331,40 +236,6 @@ DATABASE_URL=sqlite:///system_spark.db
 
 For production, use stronger secrets and a production database (PostgreSQL recommended).
 
-## 💻 Development
-
-### Running Both Servers
-
-You need both servers running simultaneously:
-
-**Terminal 1 - Backend:**
-```bash
-cd backend
-python app.py
-```
-
-**Terminal 2 - Frontend:**
-```bash
-npm run dev
-```
-
-### Building for Production
-
-**Frontend:**
-```bash
-npm run build
-```
-
-The built files will be in the `dist/` directory.
-
-**Backend:**
-For production, use a WSGI server like Gunicorn:
-
-```bash
-pip install gunicorn
-gunicorn -w 4 -b 0.0.0.0:5000 "app:create_app()"
-```
-
 ## 🎨 UI/UX Features
 
 ### Color Theme
@@ -390,27 +261,6 @@ The application is fully responsive and works on:
 - Tablet (768px - 1024px)
 - Mobile (320px - 768px)
 
-## 🚢 Deployment
-
-### Frontend Deployment
-
-The frontend can be deployed to:
-- **Vercel** (recommended for React apps)
-- **Netlify**
-- **GitHub Pages**
-- Any static hosting service
-
-### Backend Deployment
-
-The backend can be deployed to:
-- **Heroku**
-- **Railway**
-- **Render**
-- **AWS/GCP/Azure**
-- Any Python hosting service
-
-**Important:** Update the `API_BASE_URL` in production to point to your deployed backend.
-
 ## 🤝 Contributing
 
 1. Fork the repository
@@ -419,13 +269,10 @@ The backend can be deployed to:
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📝 License
-
-This project is licensed under the MIT License.
 
 ## 👥 Authors
 
-- Your Name - *Initial work*
+- Your Name - *Mohammed ZIa uddin*
 
 ## 🙏 Acknowledgments
 
@@ -435,4 +282,4 @@ This project is licensed under the MIT License.
 
 ---
 
-**Happy Learning!** 🔥
+**Happy Learning! Thank u** 🔥

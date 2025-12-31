@@ -11,6 +11,53 @@ Flask REST API backend for the System Design Learning Platform.
 - User statistics and profile
 
 ## Setup
+#### 2. Backend Setup
+
+```bash
+# Navigate to backend directory
+cd backend
+
+# Create virtual environment (recommended)
+python -m venv venv
+
+# Activate virtual environment
+# On Windows:
+venv\Scripts\activate
+# On macOS/Linux:
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Initialize database (creates system_spark.db)
+python app.py
+```
+
+The backend will start on `http://localhost:5000`
+
+#### 3. Frontend Setup
+
+```bash
+# Navigate to root directory
+cd ..
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+```
+
+The frontend will start on `http://localhost:8080`
+
+### Seed Data (Optional)
+
+To populate the database with sample topics and questions:
+
+```bash
+cd backend
+python seed_data.py
+```
 
 ### 1. Install Dependencies
 
