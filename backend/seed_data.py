@@ -1,21 +1,54 @@
 """
-Database seeding script to populate initial topics and questions
+Database seeding script to populate initial topics, questions, and demo users
 Run this after creating the database to add the initial learning content
 """
 from backend.app import create_app
-from backend.models import db, Topic, Question
+from backend.models import db, Topic, Question, User
 from datetime import date
 
 def seed_database():
     app = create_app()
     
     with app.app_context():
+        print("Seeding database...")
+        
+        # Create demo users if they don't exist
+        admin_user = User.query.filter_by(email='admin@example.com').first()
+        if not admin_user:
+            admin_user = User(
+                id='admin-1',
+                email='admin@example.com',
+                username='Admin',
+                role='admin'
+            )
+            admin_user.set_password('admin123')
+            db.session.add(admin_user)
+            print("Created admin user: admin@example.com / admin123")
+        else:
+            print("Admin user already exists")
+        
+        regular_user = User.query.filter_by(email='user@example.com').first()
+        if not regular_user:
+            regular_user = User(
+                id='user-1',
+                email='user@example.com',
+                username='TestUser',
+                role='user'
+            )
+            regular_user.set_password('user123')
+            db.session.add(regular_user)
+            print("Created user: user@example.com / user123")
+        else:
+            print("Regular user already exists")
+        
+        db.session.commit()
+        
         # Check if topics already exist
         if Topic.query.count() > 0:
-            print("Database already seeded. Skipping...")
+            print("Topics already exist. Skipping topic seeding...")
             return
         
-        print("Seeding database with topics and questions...")
+        print("Seeding topics and questions...")
         
         # Topic 1: Load Balancing Fundamentals
         topic1 = Topic(
