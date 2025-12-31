@@ -63,7 +63,8 @@ const Footer = () => {
         {/* Bottom */}
         <div className="border-t border-border/50 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} SystemDesign. Made with intention.
+            © {new Date().getFullYear()} SystemDesign. Made with intention. 
+            All right reserved by Ziauddin
           </p>
         </div>
       </div>
