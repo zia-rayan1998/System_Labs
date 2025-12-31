@@ -3,13 +3,11 @@
 A full-stack web application for learning system design concepts through daily topics, interactive quizzes, and streak tracking.The platform encourages consistency by offering one daily topic and quiz per day while also allowing users to practice topics freely from a library. Built with React (TypeScript) frontend and Flask (Python) backend.
 
 # why i build this 
-I built this project to help beginners learn system design in a structured and consistent way. WHile preparing for technical interviews and also consulting with my seniors i reliased system design is very important for good placements and developing professional understanding about real world scaling of applications, but the resources are scattered and people does not have a clear learning path.Additionally, there was no strong sense of daily accountability, which often led to inconsistency and loss of motivation.
+I built this project to help beginners learn system design in a structured and consistent way. While preparing for technical interviews and consulting with seniors, I realized that system design is crucial for strong placements and understanding real-world application scaling, yet learning resources are scattered and lack a clear path or daily accountability.
 
-To solve this problem, I designed this platform around the idea of one focused topic per day, combined with short quizzes and streak tracking exactly like leetcode. This approach encourages learners to stay consistent, reinforces understanding through practice, and reduces the overwhelming nature of system design by breaking it into manageable daily steps.
+To address this, I designed the platform around one focused topic per day, combined with short quizzes and streak tracking similar to LeetCode. This approach encourages consistency, reinforces learning through practice, and makes system design easier to grasp by breaking it into manageable steps.
 
-From a technical perspective, this project was also an opportunity for me to apply and deepen my full-stack development skills. I worked extensively on designing RESTful APIs, implementing JWT-based authentication, handling secure frontend–backend communication, and managing application state efficiently using modern React patterns.
-
-Building this project helped me gain practical experience in structuring a scalable codebase, separating concerns between frontend and backend, and designing user-friendly interfaces with a strong focus on usability and responsiveness. I learned a lot from this project specially connecting frontend and backend using cors(cross origin resource sharing) and also JWT authentication.
+Technically, this project helped me strengthen my full-stack skills by building RESTful APIs, implementing JWT authentication, handling secure frontend–backend communication, and managing application state using modern React patterns. I also gained valuable experience in structuring scalable codebases and connecting frontend and backend using CORS.
 
 # project motivation
 
@@ -95,52 +93,6 @@ A centralized API service handles all backend communication:
 - **Error Handling**: Centralized error handling with automatic redirect on 401
 - **Type Safety**: Full TypeScript support for all API responses
 
-```typescript
-// Example API call
-const topic = await topicsAPI.getDailyTopic();
-```
-
-#### 2. **Authentication Flow**
-
-1. User logs in/signs up → Backend returns JWT token
-2. Token stored in localStorage
-3. Token included in Authorization header for all requests
-4. On 401 (unauthorized), token is cleared and user redirected to login
-
-#### 3. **State Management**
-
-- **AuthContext**: Manages user authentication state
-- **React Query**: Handles data fetching, caching, and refetching
-- **Real-time Updates**: User stats refresh after quiz completion
-
-#### 4. **API Endpoints Used**
-
-```
-POST   /api/auth/login          - User login
-POST   /api/auth/signup         - User registration
-GET    /api/auth/me             - Get current user
-GET    /api/topics/daily        - Get today's daily topic
-GET    /api/topics              - Get all topics
-GET    /api/topics/:id          - Get topic by ID
-POST   /api/quizzes/daily/submit - Submit daily quiz
-POST   /api/quizzes/practice/submit - Submit practice quiz
-```
-
-#### 5. **Development Proxy**
-
-During development, Vite proxies `/api` requests to the Flask backend:
-
-```typescript
-// vite.config.ts
-proxy: {
-  '/api': {
-    target: 'http://localhost:5000',
-    changeOrigin: true,
-  },
-}
-```
-
-This allows the frontend to make requests to `/api/*` which are automatically forwarded to `http://localhost:5000/api/*`.
 
 ## 🚀 Getting Started
 
