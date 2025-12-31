@@ -251,7 +251,7 @@ The application is fully responsive and works on:
 
 ## 👥 Authors
 
-- Your Name - *Mohammed ZIa uddin*
+- *Mohammed ZIa uddin*
 
 ## 🙏 Acknowledgments
 
