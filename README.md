@@ -182,47 +182,7 @@ system-spark/
 └── README.md
 ```
 
-## 📚 API Documentation
 
-
-
-  
-
-### Topics Endpoints
-
-#### GET `/api/topics/daily`
-Get today's daily topic (requires JWT token).
-
-#### GET `/api/topics`
-Get all available topics (requires JWT token).
-
-#### GET `/api/topics/:id`
-Get a specific topic by ID (requires JWT token).
-
-### Quiz Endpoints
-
-#### POST `/api/quizzes/daily/submit`
-Submit daily quiz answers.
-
-**Request Body:**
-```json
-{
-  "correctCount": 4,
-  "totalQuestions": 5
-}
-```
-
-#### POST `/api/quizzes/practice/submit`
-Submit practice quiz answers.
-
-**Request Body:**
-```json
-{
-  "topicId": "topic-1",
-  "correctCount": 5,
-  "totalQuestions": 5
-}
-```
 
 ## 🔐 Environment Variables
 
