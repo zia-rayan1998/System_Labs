@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, XCircle, ChevronRight, Trophy, Flame, Zap } from 'lucide-react';
-import { Question } from '@/lib/mockData';
+import { Question } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import confetti from 'canvas-confetti';
 

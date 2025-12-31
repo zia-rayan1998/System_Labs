@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { Flame, Zap, Trophy, BookOpen, Target, User } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import StreakGraph from '@/components/StreakGraph';
 import { useAuth } from '@/contexts/AuthContext';
 
 const ProfilePage = () => {
@@ -82,7 +83,7 @@ const ProfilePage = () => {
         </motion.header>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-10">
           {stats.map((stat, index) => (
             <motion.div 
               key={stat.label} 
@@ -104,12 +105,22 @@ const ProfilePage = () => {
           ))}
         </div>
 
-        {/* Encouragement */}
+        {/* GitHub-style Streak Graph */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="mt-10 text-center"
+          className="card-elevated p-6 mb-10"
+        >
+          <StreakGraph user={user} />
+        </motion.div>
+
+        {/* Encouragement */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="text-center"
         >
           <p className="text-muted-foreground">
             {user.dailyStreak > 0 

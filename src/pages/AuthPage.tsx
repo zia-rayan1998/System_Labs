@@ -28,12 +28,19 @@ const AuthPage = () => {
 
     try {
       if (isLogin) {
-        const success = await login(email, password);
-        if (success) {
-          toast({ title: 'Welcome back', description: 'Successfully signed in.' });
-          navigate('/daily');
-        } else {
-          toast({ title: 'Unable to sign in', description: 'Check your credentials and try again.', variant: 'destructive' });
+        try {
+          const success = await login(email, password);
+          if (success) {
+            toast({ title: 'Welcome back', description: 'Successfully signed in.' });
+            navigate('/daily');
+          }
+        } catch (error) {
+          const errorMessage = error instanceof Error ? error.message : 'Unable to sign in';
+          toast({ 
+            title: 'Unable to sign in', 
+            description: errorMessage || 'Check your credentials and try again.', 
+            variant: 'destructive' 
+          });
         }
       } else {
         const result = await signup(email, password, username);

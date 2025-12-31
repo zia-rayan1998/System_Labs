@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, Clock, Flame, CheckCircle2, Sparkles } from 'lucide-react';
 import Navbar from '@/components/Navbar';
@@ -6,28 +6,60 @@ import Footer from '@/components/Footer';
 import QuizSection from '@/components/QuizSection';
 import StreakCelebration from '@/components/StreakCelebration';
 import { useAuth } from '@/contexts/AuthContext';
-import { mockTopicService } from '@/lib/mockData';
+import { topicsAPI, quizzesAPI, Topic } from '@/lib/api';
 import ReactMarkdown from 'react-markdown';
 import { Badge } from '@/components/ui/badge';
+import { useToast } from '@/hooks/use-toast';
 
 const DailyTopicPage = () => {
   const { user, refreshUser } = useAuth();
-  const dailyTopic = mockTopicService.getDailyTopic();
-  const hasCompleted = user ? mockTopicService.hasCompletedDaily(user.id) : false;
-  
+  const { toast } = useToast();
+  const [dailyTopic, setDailyTopic] = useState<Topic | null>(null);
+  const [hasCompleted, setHasCompleted] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [showCelebration, setShowCelebration] = useState(false);
   const [newStreak, setNewStreak] = useState(0);
-  const [quizComplete, setQuizComplete] = useState(hasCompleted);
+  const [quizComplete, setQuizComplete] = useState(false);
 
-  const handleQuizComplete = (correctCount: number, totalQuestions: number) => {
+  useEffect(() => {
+    const fetchDailyTopic = async () => {
+      try {
+        setIsLoading(true);
+        const topic = await topicsAPI.getDailyTopic();
+        setDailyTopic(topic);
+        setHasCompleted(topic.hasCompleted || false);
+        setQuizComplete(topic.hasCompleted || false);
+      } catch (error) {
+        toast({
+          title: 'Error',
+          description: 'Failed to load daily topic',
+          variant: 'destructive',
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDailyTopic();
+  }, [toast]);
+
+  const handleQuizComplete = async (correctCount: number, totalQuestions: number) => {
     if (!user) return;
-    const result = mockTopicService.submitDailyQuiz(user.id, correctCount, totalQuestions);
-    if (result.streakIncreased) {
-      setNewStreak(result.newStreak);
-      setShowCelebration(true);
+    try {
+      const result = await quizzesAPI.submitDailyQuiz(correctCount, totalQuestions);
+      if (result.streakIncreased) {
+        setNewStreak(result.newStreak);
+        setShowCelebration(true);
+      }
+      setQuizComplete(true);
+      await refreshUser();
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to submit quiz',
+        variant: 'destructive',
+      });
     }
-    setQuizComplete(true);
-    refreshUser();
   };
 
   const today = new Date().toLocaleDateString('en-US', { 
@@ -35,6 +67,33 @@ const DailyTopicPage = () => {
     month: 'long', 
     day: 'numeric' 
   });
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
+        <Navbar />
+        <main className="flex-1 container mx-auto px-6 py-10 max-w-3xl flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Loading daily topic...</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  if (!dailyTopic) {
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
+        <Navbar />
+        <main className="flex-1 container mx-auto px-6 py-10 max-w-3xl flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-muted-foreground">No topic available</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-background grain">

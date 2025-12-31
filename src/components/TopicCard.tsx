@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Clock, CheckCircle2, Lock, ChevronRight } from 'lucide-react';
-import { Topic } from '@/lib/mockData';
+import { Topic } from '@/lib/api';
 import { Badge } from '@/components/ui/badge';
 
 interface TopicCardProps {

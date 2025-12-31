@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { mockAuth, User } from '@/lib/mockData';
+import { authAPI, User, getToken } from '@/lib/api';
 
 interface AuthContextType {
   user: User | null;
@@ -18,20 +18,34 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   useEffect(() => {
     // Check for existing session on mount
-    const storedUser = mockAuth.getCurrentUser();
-    setUser(storedUser);
-    setIsLoading(false);
+    const token = getToken();
+    if (token) {
+      authAPI.getCurrentUser()
+        .then((userData) => {
+          setUser(userData);
+        })
+        .catch(() => {
+          // Token invalid, clear it
+          setUser(null);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    } else {
+      setIsLoading(false);
+    }
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
     setIsLoading(true);
     try {
-      const result = await mockAuth.login(email, password);
-      if (result) {
-        setUser(result);
-        return true;
-      }
-      return false;
+      const result = await authAPI.login(email, password);
+      setUser(result.user);
+      return true;
+    } catch (error) {
+      console.error('Login error:', error);
+      // Re-throw to let AuthPage handle the error message
+      throw error;
     } finally {
       setIsLoading(false);
     }
@@ -40,12 +54,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const signup = async (email: string, password: string, username: string): Promise<{ success: boolean; error?: string }> => {
     setIsLoading(true);
     try {
-      const result = await mockAuth.signup(email, password, username);
-      if (result) {
-        setUser(result);
-        return { success: true };
-      }
-      return { success: false, error: 'Signup failed' };
+      const result = await authAPI.signup(email, password, username);
+      setUser(result.user);
+      return { success: true };
     } catch (error) {
       return { success: false, error: (error as Error).message };
     } finally {
@@ -53,14 +64,24 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  const logout = () => {
-    mockAuth.logout();
-    setUser(null);
+  const logout = async () => {
+    try {
+      await authAPI.logout();
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      setUser(null);
+    }
   };
 
-  const refreshUser = () => {
-    const updatedUser = mockAuth.getCurrentUser();
-    setUser(updatedUser);
+  const refreshUser = async () => {
+    try {
+      const updatedUser = await authAPI.getCurrentUser();
+      setUser(updatedUser);
+    } catch (error) {
+      console.error('Refresh user error:', error);
+      setUser(null);
+    }
   };
 
   return (

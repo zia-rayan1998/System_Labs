@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { mockTopics, mockTopicService, type Topic } from "@/lib/mockData";
+import { topicsAPI, Topic } from "@/lib/api";
 import { useAuth } from "@/contexts/AuthContext";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -11,16 +11,39 @@ import {
   ArrowRight,
   Sparkles
 } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const LibraryPage = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { toast } = useToast();
+  const [topics, setTopics] = useState<Topic[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [hoveredTopic, setHoveredTopic] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchTopics = async () => {
+      try {
+        setIsLoading(true);
+        const topicsData = await topicsAPI.getAllTopics();
+        setTopics(topicsData);
+      } catch (error) {
+        toast({
+          title: 'Error',
+          description: 'Failed to load topics',
+          variant: 'destructive',
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchTopics();
+  }, [toast]);
 
   const getTopicStatus = (topic: Topic) => {
     if (!user) return "locked";
-    const isCompleted = mockTopicService.hasCompletedTopic(user.id, topic.id);
-    if (isCompleted) return "completed";
+    if (topic.isCompleted) return "completed";
     return "available";
   };
 
@@ -28,13 +51,11 @@ const LibraryPage = () => {
     navigate(`/topic/${topicId}`);
   };
 
-  const completedCount = user 
-    ? mockTopics.filter(t => mockTopicService.hasCompletedTopic(user.id, t.id)).length 
-    : 0;
+  const completedCount = topics.filter(t => t.isCompleted).length;
 
   // Position nodes in a flowing path pattern
   const getNodeStyle = (index: number) => {
-    const totalTopics = mockTopics.length;
+    const totalTopics = topics.length;
     const isEven = index % 2 === 0;
     
     return {
@@ -42,6 +63,20 @@ const LibraryPage = () => {
       marginRight: isEven ? '40%' : '0%',
     };
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
+        <Navbar />
+        <main className="flex-1 container mx-auto px-6 py-16 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-muted-foreground">Loading topics...</p>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-background grain">
@@ -63,7 +98,7 @@ const LibraryPage = () => {
               Your Journey
             </h1>
             <p className="text-muted-foreground text-lg max-w-xl">
-              Navigate through {mockTopics.length} carefully crafted topics. 
+              Navigate through {topics.length} carefully crafted topics. 
               Each one builds on the last.
             </p>
           </motion.div>
@@ -77,13 +112,13 @@ const LibraryPage = () => {
           >
             <div className="flex items-center justify-between text-sm mb-2">
               <span className="text-muted-foreground">Progress</span>
-              <span className="text-foreground font-medium">{completedCount} of {mockTopics.length}</span>
+              <span className="text-foreground font-medium">{completedCount} of {topics.length}</span>
             </div>
             <div className="progress-track">
               <motion.div 
                 className="progress-fill"
                 initial={{ width: 0 }}
-                animate={{ width: `${(completedCount / mockTopics.length) * 100}%` }}
+                animate={{ width: topics.length > 0 ? `${(completedCount / topics.length) * 100}%` : 0 }}
                 transition={{ duration: 0.8, delay: 0.3 }}
               />
             </div>
@@ -101,7 +136,7 @@ const LibraryPage = () => {
 
             {/* Topic Nodes */}
             <div className="space-y-6">
-              {mockTopics.map((topic, index) => {
+              {topics.map((topic, index) => {
                 const status = getTopicStatus(topic);
                 const isHovered = hoveredTopic === topic.id;
                 const nodeStyle = getNodeStyle(index);
