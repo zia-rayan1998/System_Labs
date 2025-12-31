@@ -16,34 +16,23 @@ def seed_database():
     with app.app_context():
         print("Seeding database...")
         
-        # Create demo users if they don't exist
-        admin_user = User.query.filter_by(email='admin@example.com').first()
+        # Create single admin user with credentials provided by the developer
+        admin_email = 'ziauddinrayan97@gmail.com'
+        admin_password = 'Ziarayan$1998'
+
+        admin_user = User.query.filter_by(email=admin_email).first()
         if not admin_user:
             admin_user = User(
                 id='admin-1',
-                email='admin@example.com',
+                email=admin_email,
                 username='Admin',
                 role='admin'
             )
-            admin_user.set_password('admin123')
+            admin_user.set_password(admin_password)
             db.session.add(admin_user)
-            print("Created admin user: admin@example.com / admin123")
+            print(f"Created admin user: {admin_email} / {admin_password}")
         else:
             print("Admin user already exists")
-        
-        regular_user = User.query.filter_by(email='user@example.com').first()
-        if not regular_user:
-            regular_user = User(
-                id='user-1',
-                email='user@example.com',
-                username='TestUser',
-                role='user'
-            )
-            regular_user.set_password('user123')
-            db.session.add(regular_user)
-            print("Created user: user@example.com / user123")
-        else:
-            print("Regular user already exists")
         
         db.session.commit()
         

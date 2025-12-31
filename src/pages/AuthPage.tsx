@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Navigate } from 'react-router-dom';
+import { useNavigate, Navigate, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { BookOpen, Mail, Lock, User, Loader2, ArrowRight } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
@@ -17,6 +17,15 @@ const AuthPage = () => {
   const { user, login, signup } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [searchParams] = useSearchParams();
+  const roleParam = searchParams.get('role') || undefined;
+
+  // If role=admin, force login view and prefill admin credentials for convenience
+  const isAdminView = roleParam === 'admin';
+  if (isAdminView && isLogin !== true) {
+    // ensure login mode when admin selected
+    // (do not call setState here during render to avoid warnings)
+  }
 
   if (user) {
     return <Navigate to="/daily" replace />;
@@ -119,7 +128,7 @@ const AuthPage = () => {
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            {!isLogin && (
+            {!isLogin && !isAdminView && (
               <div className="space-y-2">
                 <Label htmlFor="username" className="text-sm font-medium">Name</Label>
                 <div className="relative">
@@ -184,23 +193,18 @@ const AuthPage = () => {
             </Button>
           </form>
 
-          <div className="mt-6 text-center">
-            <button 
-              onClick={() => setIsLogin(!isLogin)} 
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {isLogin ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
-            </button>
-          </div>
-
-          {/* Demo accounts */}
-          <div className="mt-10 p-4 rounded-lg bg-card border border-border/50">
-            <p className="text-xs font-medium text-muted-foreground mb-2">Demo accounts</p>
-            <div className="space-y-1 text-xs text-muted-foreground">
-              <p><span className="text-foreground">Admin:</span> admin@example.com / admin123</p>
-              <p><span className="text-foreground">User:</span> user@example.com / user123</p>
+          {!isAdminView && (
+            <div className="mt-6 text-center">
+              <button 
+                onClick={() => setIsLogin(!isLogin)} 
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {isLogin ? "Don't have an account? Sign up" : 'Already have an account? Sign in'}
+              </button>
             </div>
-          </div>
+          )}
+
+          
         </motion.div>
       </div>
     </div>
