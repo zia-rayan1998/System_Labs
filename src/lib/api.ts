@@ -1,6 +1,21 @@
 // API service for backend communication
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
+// Optional mock mode (set VITE_USE_MOCK=true in .env to enable)
+const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true';
+// Lazy import mock helpers when running in mock mode
+let mockAuth: any = null;
+let mockTopicService: any = null;
+
+// Load mock module dynamically in the browser (avoid `require` which is not available)
+const ensureMocksLoaded = async (): Promise<void> => {
+  if (!USE_MOCK) return;
+  if (mockAuth && mockTopicService) return;
+  const mocks = await import('@/lib/mockData');
+  mockAuth = mocks.mockAuth;
+  mockTopicService = mocks.mockTopicService;
+};
+
 export interface User {
   id: string;
   email: string;
@@ -104,7 +119,37 @@ const apiFetch = async (endpoint: string, options: RequestInit = {}): Promise<Re
 };
 
 // Auth API
-export const authAPI = {
+export const authAPI = USE_MOCK ? {
+  login: async (email: string, password: string): Promise<AuthResponse> => {
+    await ensureMocksLoaded();
+    const user = await mockAuth.login(email, password);
+    if (!user) throw new Error('Invalid email or password');
+    const token = `mock-token-${user.id}`;
+    setToken(token);
+    return { user, token } as AuthResponse;
+  },
+
+  signup: async (email: string, password: string, username: string): Promise<AuthResponse> => {
+    await ensureMocksLoaded();
+    const user = await mockAuth.signup(email, password, username);
+    if (!user) throw new Error('Unable to create user');
+    const token = `mock-token-${user.id}`;
+    setToken(token);
+    return { user, token } as AuthResponse;
+  },
+
+  logout: async (): Promise<void> => {
+    mockAuth.logout();
+    removeToken();
+  },
+
+  getCurrentUser: async (): Promise<User> => {
+    await ensureMocksLoaded();
+    const user = mockAuth.getCurrentUser();
+    if (!user) throw new Error('Unauthorized');
+    return user as User;
+  },
+} : {
   login: async (email: string, password: string): Promise<AuthResponse> => {
     const response = await apiFetch('/auth/login', {
       method: 'POST',
@@ -143,24 +188,44 @@ export const authAPI = {
 // Topics API
 export const topicsAPI = {
   getDailyTopic: async (): Promise<Topic> => {
+    if (USE_MOCK) {
+      await ensureMocksLoaded();
+      return mockTopicService.getDailyTopic();
+    }
     const response = await apiFetch('/topics/daily');
     const data = await response.json();
     return data.topic;
   },
 
   getAllTopics: async (): Promise<Topic[]> => {
+    if (USE_MOCK) {
+      await ensureMocksLoaded();
+      return mockTopicService.getAllTopics();
+    }
     const response = await apiFetch('/topics');
     const data = await response.json();
     return data.topics;
   },
 
   getTopicById: async (topicId: string): Promise<Topic> => {
+    if (USE_MOCK) {
+      await ensureMocksLoaded();
+      const t = mockTopicService.getTopicById(topicId);
+      if (!t) throw new Error('Topic not found');
+      return t;
+    }
     const response = await apiFetch(`/topics/${topicId}`);
     const data = await response.json();
     return data.topic;
   },
 
   checkTopicCompleted: async (topicId: string): Promise<boolean> => {
+    if (USE_MOCK) {
+      await ensureMocksLoaded();
+      const user = mockAuth.getCurrentUser();
+      if (!user) throw new Error('Unauthorized');
+      return mockTopicService.hasCompletedTopic(user.id, topicId);
+    }
     const response = await apiFetch(`/topics/${topicId}/completed`);
     const data = await response.json();
     return data.completed;
@@ -170,6 +235,13 @@ export const topicsAPI = {
 // Quizzes API
 export const quizzesAPI = {
   submitDailyQuiz: async (correctCount: number, totalQuestions: number): Promise<{ newStreak: number; streakIncreased: boolean; user: User }> => {
+    if (USE_MOCK) {
+      await ensureMocksLoaded();
+      const user = mockAuth.getCurrentUser();
+      if (!user) throw new Error('Unauthorized');
+      const res = mockTopicService.submitDailyQuiz(user.id, correctCount, totalQuestions);
+      return { ...res, user: mockAuth.getCurrentUser() };
+    }
     const response = await apiFetch('/quizzes/daily/submit', {
       method: 'POST',
       body: JSON.stringify({ correctCount, totalQuestions }),
@@ -179,6 +251,13 @@ export const quizzesAPI = {
   },
 
   submitPracticeQuiz: async (topicId: string, correctCount: number, totalQuestions: number): Promise<{ newStreak: number; user: User }> => {
+    if (USE_MOCK) {
+      await ensureMocksLoaded();
+      const user = mockAuth.getCurrentUser();
+      if (!user) throw new Error('Unauthorized');
+      const res = mockTopicService.submitLibraryQuiz(user.id, topicId, correctCount);
+      return { ...res, user: mockAuth.getCurrentUser() };
+    }
     const response = await apiFetch('/quizzes/practice/submit', {
       method: 'POST',
       body: JSON.stringify({ topicId, correctCount, totalQuestions }),
