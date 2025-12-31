@@ -249,7 +249,7 @@ The application is fully responsive and works on:
 5. Open a Pull Request
 
 
-## 👥 Authors
+## 👥 Author
 
 - *Mohammed ZIa uddin*
 
