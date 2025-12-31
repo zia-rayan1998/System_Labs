@@ -23,8 +23,8 @@
 
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["cs50_project/src/*"]
     }
   },
-  "include": ["src"]
+  "include": ["cs50_project/src"]
 }
