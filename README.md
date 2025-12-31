@@ -2,6 +2,15 @@
 
 A full-stack web application for learning system design concepts through daily topics, interactive quizzes, and streak tracking.The platform encourages consistency by offering one daily topic and quiz per day while also allowing users to practice topics freely from a library. Built with React (TypeScript) frontend and Flask (Python) backend.
 
+# why i build this 
+I built this project to help beginners learn system design in a structured and consistent way. WHile preparing for technical interviews and also consulting with my seniors i reliased system design is very important for good placements and developing professional understanding about real world scaling of applications, but the resources are scattered and people does not have a clear learning path.Additionally, there was no strong sense of daily accountability, which often led to inconsistency and loss of motivation.
+
+To solve this problem, I designed this platform around the idea of one focused topic per day, combined with short quizzes and streak tracking exactly like leetcode. This approach encourages learners to stay consistent, reinforces understanding through practice, and reduces the overwhelming nature of system design by breaking it into manageable daily steps.
+
+From a technical perspective, this project was also an opportunity for me to apply and deepen my full-stack development skills. I worked extensively on designing RESTful APIs, implementing JWT-based authentication, handling secure frontend–backend communication, and managing application state efficiently using modern React patterns.
+
+Building this project helped me gain practical experience in structuring a scalable codebase, separating concerns between frontend and backend, and designing user-friendly interfaces with a strong focus on usability and responsiveness. I learned a lot from this project specially connecting frontend and backend using cors(cross origin resource sharing) and also JWT authentication.
+
 # project motivation
 
 -**System Design is often difficult for beginners because**:
@@ -17,6 +26,16 @@ A full-stack web application for learning system design concepts through daily t
 
 
 ![SystemDesign Platform](https://img.shields.io/badge/React-18.3-blue) ![Flask](https://img.shields.io/badge/Flask-2.3-green) ![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue) 
+
+## 📚 What I Learned
+
+- Designing RESTful APIs with Flask
+- JWT authentication and secure session handling
+- Managing global state with React Context
+- Data fetching and caching using React Query
+- Designing consistent UI/UX systems
+- Building streak logic and progress tracking
+
 
 ## 🚀 Features
 
