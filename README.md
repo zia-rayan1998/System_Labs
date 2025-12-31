@@ -2,7 +2,7 @@
 
 A full-stack web application for learning system design concepts through daily topics, interactive quizzes, and streak tracking.The platform encourages consistency by offering one daily topic and quiz per day while also allowing users to practice topics freely from a library. Built with React (TypeScript) frontend and Flask (Python) backend.
 
-[watch the video on final project](https://www.youtube.com/watch?v=81bSXCDsKkU)
+[watch the video on final project](https://youtu.be/81bSXCDsKkU)
 
 # why i build this 
 I built this project to help beginners learn system design in a structured and consistent way. While preparing for technical interviews and consulting with seniors, I realized that system design is crucial for strong placements and understanding real-world application scaling, yet learning resources are scattered and lack a clear path or daily accountability.
