@@ -2,8 +2,12 @@
 Database seeding script to populate initial topics, questions, and demo users
 Run this after creating the database to add the initial learning content
 """
-from backend.app import create_app
-from backend.models import db, Topic, Question, User
+try:
+    from backend.app import create_app
+    from backend.models import db, Topic, Question, User
+except ModuleNotFoundError:
+    from app import create_app
+    from models import db, Topic, Question, User
 from datetime import date
 
 def seed_database():

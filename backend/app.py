@@ -1,9 +1,12 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
 import os
-from backend.models import db
+try:
+    from backend.models import db
+except ModuleNotFoundError:
+    from models import db
 
 # Initialize JWT
 jwt = JWTManager()
@@ -28,11 +31,17 @@ def create_app():
     # Enable CORS for React frontend
     CORS(app, resources={r"/api/*": {"origins": "*"}})
     
-    # Register blueprints
-    from backend.routes.auth import auth_bp
-    from backend.routes.topics import topics_bp
-    from backend.routes.quizzes import quizzes_bp
-    from backend.routes.users import users_bp
+    # Register blueprints (support running as package or as script)
+    try:
+        from backend.routes.auth import auth_bp
+        from backend.routes.topics import topics_bp
+        from backend.routes.quizzes import quizzes_bp
+        from backend.routes.users import users_bp
+    except ModuleNotFoundError:
+        from routes.auth import auth_bp
+        from routes.topics import topics_bp
+        from routes.quizzes import quizzes_bp
+        from routes.users import users_bp
     
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(topics_bp, url_prefix='/api/topics')
@@ -42,6 +51,12 @@ def create_app():
     # Create tables
     with app.app_context():
         db.create_all()
+
+    # Root route to help debugging / show available API endpoints
+    @app.route('/')
+    def index():
+        routes = sorted([str(r) for r in app.url_map.iter_rules() if not str(r).startswith('/static')])
+        return jsonify({'message': 'API running', 'routes': routes}), 200
     
     return app
 

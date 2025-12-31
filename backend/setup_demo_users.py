@@ -2,8 +2,12 @@
 Quick script to create demo users for testing
 Run this to ensure demo accounts exist
 """
-from backend.app import create_app
-from backend.models import db, User
+try:
+    from backend.app import create_app
+    from backend.models import db, User
+except ModuleNotFoundError:
+    from app import create_app
+    from models import db, User
 
 def create_demo_users():
     app = create_app()
@@ -20,9 +24,9 @@ def create_demo_users():
             )
             admin_user.set_password('admin123')
             db.session.add(admin_user)
-            print("✅ Created admin user: admin@example.com / admin123")
+            print("Created admin user: admin@example.com / admin123")
         else:
-            print("ℹ️  Admin user already exists: admin@example.com / admin123")
+            print("Admin user already exists: admin@example.com / admin123")
         
         # Create regular user
         regular_user = User.query.filter_by(email='user@example.com').first()
@@ -35,12 +39,12 @@ def create_demo_users():
             )
             regular_user.set_password('user123')
             db.session.add(regular_user)
-            print("✅ Created user: user@example.com / user123")
+            print("Created user: user@example.com / user123")
         else:
-            print("ℹ️  Regular user already exists: user@example.com / user123")
+            print("Regular user already exists: user@example.com / user123")
         
         db.session.commit()
-        print("\n✅ Demo users are ready!")
+        print("\nDemo users are ready!")
         print("\nYou can now sign in with:")
         print("  Admin: admin@example.com / admin123")
         print("  User:  user@example.com / user123")

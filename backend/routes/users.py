@@ -1,6 +1,9 @@
 from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from backend.models import User, UserProgress, db
+try:
+    from backend.models import User, UserProgress, db
+except ModuleNotFoundError:
+    from models import User, UserProgress, db
 
 users_bp = Blueprint('users', __name__)
 

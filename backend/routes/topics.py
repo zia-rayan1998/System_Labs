@@ -1,7 +1,10 @@
 from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from datetime import date, datetime
-from backend.models import Topic, UserProgress, db
+try:
+    from backend.models import Topic, UserProgress, db
+except ModuleNotFoundError:
+    from models import Topic, UserProgress, db
 
 topics_bp = Blueprint('topics', __name__)
 
