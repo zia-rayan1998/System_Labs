@@ -5,15 +5,15 @@ A full-stack web application for learning system design concepts through daily t
 # project motivation
 
 -**System Design is often difficult for beginners because**:
-Resources are scattered
-Learning lacks structure
-There is no daily accountability
+- Resources are scattered
+- Learning lacks structure
+- There is no daily accountability
 
 - **This project solves that by**:
-Providing one focused topic per day which create user interest in system design 
-Reinforcing learning through short quizzes, which helps user tests their knowledge
-Tracking progress with daily streaks like we do on leetcode and geekforgeeks
-Offering a topic library for revision which can help them understand other topics in details
+- Providing one focused topic per day which create user interest in system design 
+- Reinforcing learning through short quizzes, which helps user tests their knowledge
+- Tracking progress with daily streaks like we do on leetcode and geekforgeeks
+- Offering a topic library for revision which can help them understand other topics in details
 
 
 ![SystemDesign Platform](https://img.shields.io/badge/React-18.3-blue) ![Flask](https://img.shields.io/badge/Flask-2.3-green) ![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue) 
